@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "promoter-motif-scanner"
+abstract: >-
+  A dependency-free Python tool that scans promoter sequences for
+  IUPAC-coded motifs on both strands, reports every hit with 1-based
+  coordinates, and flags sequences where two motifs co-occur within a
+  chosen distance.
+type: software
+authors:
+  - family-names: "Sheraz"
+    given-names: "Muhammad"
+    orcid: "https://orcid.org/0009-0007-3877-2232"
+version: "1.0.0"
+date-released: "2026-11-03"
+license: MIT
+repository-code: "https://github.com/Muhammad5heraz/promoter-motif-scanner"
+keywords:
+  - promoter analysis
+  - cis-regulatory elements
+  - motif scanning
+  - bioinformatics
+  - plant genomics
