@@ -56,7 +56,7 @@ def read_fasta(handle):
         yield name, "".join(chunks).upper()
 
 
-def scan_sequence(seq, motif_name, motif):
+def scan_sequence(seq, motif):
     """Return hits as (strand, start, end, matched_text), 1-based inclusive."""
     hits = []
     length = len(motif)
@@ -120,19 +120,19 @@ def main(argv=None):
             n_seq += 1
             per_motif = {}
             for name, motif in motifs:
-                hits = scan_sequence(seq, name, motif)
+                hits = scan_sequence(seq, motif)
                 per_motif[name] = hits
                 for strand, s, e, text in hits:
                     hit_writer.writerow([seq_id, name, strand, s, e, text])
                 if hits:
                     totals[name] += 1
-            co = ""
+            row = [seq_id, len(seq)] + [len(per_motif[n]) for n, _ in motifs]
             if len(motifs) >= 2:
                 a, b = motifs[0][0], motifs[1][0]
                 co = int(cooccurs(per_motif[a], per_motif[b], args.window))
                 n_co += co
-            summary_rows.append(
-                [seq_id, len(seq)] + [len(per_motif[n]) for n, _ in motifs] + [co])
+                row.append(co)
+            summary_rows.append(row)
     if out is not sys.stdout:
         out.close()
 
@@ -140,7 +140,9 @@ def main(argv=None):
         with open(args.summary, "w", newline="") as fh:
             w = csv.writer(fh, delimiter="\t")
             head = ["seq_id", "length"] + [f"{n}_hits" for n, _ in motifs]
-            w.writerow(head + [f"cooccur_within_{args.window}bp"])
+            if len(motifs) >= 2:
+                head.append(f"cooccur_within_{args.window}bp")
+            w.writerow(head)
             w.writerows(summary_rows)
 
     print(f"Sequences scanned: {n_seq}", file=sys.stderr)
